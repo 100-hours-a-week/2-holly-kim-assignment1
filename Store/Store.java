@@ -7,12 +7,13 @@ import java.util.Scanner;
 
 
 public class Store {
-    private Scanner scanner = new Scanner(System.in);
-    private String inputData;
-    private TotalPrice payment = new TotalPrice();
+    private final Scanner scanner = new Scanner(System.in);
+    private final TotalPrice payment = new TotalPrice();
     private List<Item> purchasedList = new ArrayList<>();
+    private double discountRate = 0;
 
     private static final List<MainItem> mainMenuList;
+    private static final List<PromotionItem> newMenuList;
     private static final List<AdditionalItem> sideMenuList;
     private static final List<AdditionalItem> drinkList;
 
@@ -20,7 +21,14 @@ public class Store {
         mainMenuList = List.of(
                 new MainItem("빅맥", 4500),
                 new MainItem("맥스파이시 상하이 버거", 5000),
-                new MainItem("의성마늘버거", 5500)
+                new MainItem("의성마늘버거", 5500),
+                new MainItem("쿼터파운드치즈", 6000),
+                new MainItem("최고급홀리버거", 9000)
+        );
+        newMenuList = List.of(
+                new PromotionItem("치즈할라피뇨더블쿼터파운드치즈", 6300),
+                new PromotionItem("치즈할라피뇨쿼터파운드치즈", 6500),
+                new PromotionItem("독점공개신상버거", 7000, 0.2)
         );
         sideMenuList = List.of(
                 new AdditionalItem("감자튀김 S", 0),
@@ -36,10 +44,28 @@ public class Store {
     }
 
     public void welcome() {
-        System.out.println("====================");
-        System.out.println("Welcome to McDonald's");
+        System.out.println("======================== Welcome to McDonald's ===========================");
+        popup();
         System.out.println("주문을 도와드리겠습니다.");
-        System.out.println("---------------------");
+        System.out.println("--------------------------------------------------------------------------");
+    }
+
+    public void popup() {
+        System.out.println("**************************************************************************");
+        System.out.println("현재 진행중인 프로모션 안내드립니다.");
+        System.out.println("신메뉴를 기간 한정으로 할인하고 있습니다.\n(단품/세트 모두 해당 버거별 일괄 할인율 적용)");
+        System.out.println("신메뉴 목록은 다음과 같습니다.");
+        printPromotionBurger();
+        System.out.println("**************************************************************************");
+    }
+
+    private void printPromotionBurger() {
+        for (PromotionItem i : newMenuList) {
+            System.out.println(String.format("✯ %s (원가 %,d won) -> 구매 시 해당 단품, 세트 %d %% 할인 쿠폰 증정!",
+                    i.getName(),
+                    i.getPrice(),
+                    (int) (i.getPromotionRate() * 100)));
+        }
     }
 
 
@@ -52,7 +78,20 @@ public class Store {
         for (MainItem i : mainMenuList) {
             i.displayMenu();
         }
-        selectMenu(mainMenuList);
+        for (PromotionItem i : newMenuList) {
+            i.displayMenu();
+        }
+        // 모든 메인 메뉴 중 선택
+        List<MainItem> allMainMenuList = new ArrayList<>();
+        allMainMenuList.addAll(mainMenuList);
+        allMainMenuList.addAll(newMenuList);
+        // 선택한 버거가 할인 버거인 경우 discountRate 변경
+        String burger = selectMenu(allMainMenuList);
+        for (PromotionItem i : newMenuList) {
+            if (burger.equals(i.getName())) {
+                discountRate = i.getPromotionRate();
+            }
+        }
     }
 
     public void selectSet() {
@@ -62,12 +101,12 @@ public class Store {
             String isSet = scanner.nextLine();
             if (isSet.equalsIgnoreCase("Y")) {
                 System.out.println("세트 메뉴를 선택하셨습니다.");
-                System.out.println("---------------------");
+                System.out.println("--------------------------------------------------------------------------");
                 sideOrderSize();
                 break;
             } else if (isSet.equalsIgnoreCase("N")) {
                 System.out.println("세트 메뉴를 선택하지 않았습니다. 단품으로 주문되었습니다.");
-                System.out.println("------------------------");
+                System.out.println("--------------------------------------------------------------------------");
                 break;
             } else {
                 System.out.print("다시 입력해주세요. (Y / N) : ");
@@ -91,13 +130,13 @@ public class Store {
         selectMenu(drinkList);
     }
 
-    public void selectMenu(List<? extends Item> menuList) {
+    public String selectMenu(List<? extends Item> menuList) {
         System.out.print("메뉴 번호 입력: ");
 //        Optional<Item> optional=mainMenuList.stream().filter(i->i.getId()==selectedNum).findAny();
 //        if(optional.isPresent()){ }
         while (true) {
             try {
-                inputData = scanner.nextLine();
+                String inputData = scanner.nextLine();
                 int selectedNum = Integer.parseInt(inputData);
 
                 if (selectedNum > menuList.size() || selectedNum < 0) {
@@ -108,8 +147,8 @@ public class Store {
                 System.out.printf("%d번 %s 상품을 선택하셨습니다.%n", selectedNum, selectedMenu);
                 payment.add(selectedMenu.getPrice());
                 purchasedList.add(selectedMenu);
-                System.out.println("---------------------");
-                break;
+                System.out.println("--------------------------------------------------------------------------");
+                return selectedMenu.getName();
             } catch (NumberFormatException e) {
                 System.out.print("숫자를 입력하세요.");
             }
@@ -136,7 +175,7 @@ public class Store {
                     System.out.printf("남은 금액: %,d won%n", remainingAmount);
                 } else {
                     System.out.println("결제가 완료되었습니다.");
-                    System.out.println("---------------------");
+                    System.out.println("--------------------------------------------------------------------------");
                     break;
                 }
             } catch (NumberFormatException e) {
@@ -151,6 +190,7 @@ public class Store {
             System.out.println(String.format("%s (%,d won)", i, i.getPrice()));
         }
         System.out.println(String.format("현재 보고있는 상품의 총 금액: %,d won", payment.getCurrentPrice()));
+        System.out.println("할인 쿠폰은 최종 결제 단계에서 적용됩니다.");
         while (true) {
             try {
                 System.out.print("해당 상품을 몇 개 주문하시겠습니까? (1 이상의 숫자 입력): ");
@@ -159,13 +199,14 @@ public class Store {
                     System.out.println("1 이상의 숫자를 입력해주세요.");
                     continue;
                 }
-                payment.multiply(quantity);
+                payment.multiply(quantity, discountRate);
+                discountRate = 0;
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("올바른 숫자를 입력해주세요.");
             }
         }
-        System.out.println("----------------------------");
+        System.out.println("--------------------------------------------------------------------------");
     }
 
     public void closeScanner() {
@@ -177,8 +218,7 @@ public class Store {
     }
 
     public void goodbye() {
-        System.out.println("Thank you for visiting McDonald's");
-        System.out.println("====================");
+        System.out.println("================== Thank you for visiting McDonald's =====================");
     }
 
 

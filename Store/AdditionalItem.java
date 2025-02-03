@@ -1,14 +1,14 @@
 package Store;
 
-public class AdditionalItem extends MainItem{
-    public static int cnt=0; // shadowing(재할당)
+public class AdditionalItem extends Item{
+    public static int additionalCnt =0;
     public AdditionalItem(String name, int price) {
         this.name=name;
         this.price=price;
-        this.id=++cnt;
+        this.id=++additionalCnt;
     }
     public static void resetCounter(){
-        cnt=0;
+        additionalCnt =0;
     }
     public void displayMenu(){
         System.out.println(String.format("%d. %s (+%,d won)", this.id, name, price));

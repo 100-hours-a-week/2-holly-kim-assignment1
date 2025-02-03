@@ -3,6 +3,7 @@ package Store;
 public abstract class Item {
     String name;
     int price;
+    int id;
 
     public String getName() {
         return name;

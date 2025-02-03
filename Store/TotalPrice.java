@@ -21,8 +21,8 @@ public class TotalPrice {
         return totalPrice;
     }
 
-    public int multiply(int order_count) {
-        totalPrice += currentPrice*order_count;
+    public int multiply(int order_count, double discountRate) {
+        totalPrice += currentPrice * (1 - discountRate) * order_count;
         return totalPrice;
     }
 

@@ -1,16 +1,11 @@
 package Store;
 
 public class MainItem extends Item{
-    public static int cnt;
-    int id;
+    public static int mainCnt;
 
     public MainItem(String name, int price){
         super(name, price);
-        this.id=++cnt;
-    }
-
-    public MainItem() {
-        super();
+        this.id=++mainCnt;
     }
 
     public void displayMenu(){
