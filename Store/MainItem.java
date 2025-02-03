@@ -1,4 +1,4 @@
-package store;
+package Store;
 
 public class MainItem extends Item{
     public static int cnt;

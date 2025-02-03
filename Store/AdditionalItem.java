@@ -1,4 +1,4 @@
-package store;
+package Store;
 
 public class AdditionalItem extends MainItem{
     public static int cnt=0; // shadowing(재할당)
