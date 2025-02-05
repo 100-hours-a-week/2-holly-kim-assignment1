@@ -12,10 +12,12 @@ public class Store {
     private List<Item> purchasedList = new ArrayList<>();
     private double discountRate = 0;
 
-    private static final List<MainItem> mainMenuList;
-    private static final List<PromotionItem> newMenuList;
-    private static final List<AdditionalItem> sideMenuList;
-    private static final List<AdditionalItem> drinkList;
+    private static List<MainItem> mainMenuList;
+    private static List<PromotionItem> newMenuList;
+    private static List<AdditionalItem> sideMenuList;
+    private static List<AdditionalItem> drinkList;
+    // 모든 메인 메뉴를 포함하는 리스트 생성
+    private static List<MainItem> allMainMenuList = new ArrayList<>();
 
     static {
         mainMenuList = List.of(
@@ -34,7 +36,6 @@ public class Store {
                 new AdditionalItem("감자튀김 S", 0),
                 new AdditionalItem("감자튀김 L", 500)
         );
-        AdditionalItem.resetCounter();
         drinkList = List.of(
                 new AdditionalItem("콜라", 0),
                 new AdditionalItem("사이다", 0),
@@ -43,7 +44,31 @@ public class Store {
         );
     }
 
+    public void deleteItem(List<? extends Item> list, int id) {
+        list.remove(id);
+        setItemId(list);
+    }
+
+    public <T extends Item> void addItem(List<T> list, T item) {
+        list.add(item);
+        setItemId(list);
+    }
+
+
+    public void setItemId(List<? extends Item> list) {
+        int id = 1;
+        for (Item item : list) {
+            item.setId(id++);
+        }
+    }
+
     public void welcome() {
+        allMainMenuList.addAll(mainMenuList);
+        allMainMenuList.addAll(newMenuList);
+        setItemId(allMainMenuList);
+        setItemId(sideMenuList);
+        setItemId(drinkList);
+
         System.out.println("======================== Welcome to McDonald's ===========================");
         popup();
         System.out.println("주문을 도와드리겠습니다.");
@@ -81,10 +106,6 @@ public class Store {
         for (PromotionItem i : newMenuList) {
             i.displayMenu();
         }
-        // 모든 메인 메뉴 중 선택
-        List<MainItem> allMainMenuList = new ArrayList<>();
-        allMainMenuList.addAll(mainMenuList);
-        allMainMenuList.addAll(newMenuList);
         // 선택한 버거가 할인 버거인 경우 discountRate 변경
         String burger = selectMenu(allMainMenuList);
         for (PromotionItem i : newMenuList) {
@@ -132,27 +153,29 @@ public class Store {
 
     public String selectMenu(List<? extends Item> menuList) {
         System.out.print("메뉴 번호 입력: ");
-//        Optional<Item> optional=mainMenuList.stream().filter(i->i.getId()==selectedNum).findAny();
-//        if(optional.isPresent()){ }
         while (true) {
             try {
                 String inputData = scanner.nextLine();
                 int selectedNum = Integer.parseInt(inputData);
-
-                if (selectedNum > menuList.size() || selectedNum < 0) {
+                if (selectedNum > menuList.size() || selectedNum < 1) {
                     System.out.println("잘못된 번호입니다. 다시 선택하세요.");
                     continue;
                 }
+
                 Item selectedMenu = menuList.get(selectedNum - 1);
                 System.out.printf("%d번 %s 상품을 선택하셨습니다.%n", selectedNum, selectedMenu);
-                payment.add(selectedMenu.getPrice());
-                purchasedList.add(selectedMenu);
+                addToCart(selectedMenu);
                 System.out.println("--------------------------------------------------------------------------");
                 return selectedMenu.getName();
             } catch (NumberFormatException e) {
                 System.out.print("숫자를 입력하세요.");
             }
         }
+    }
+
+    private void addToCart(Item selectedMenu) {
+        payment.add(selectedMenu.getPrice());
+        purchasedList.add(selectedMenu);
     }
 
     public void pay() {

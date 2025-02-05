@@ -15,11 +15,11 @@ public class Main {
             store.drinkOrder(); // 음료 주문
             store.selectQuantity(); // 해당 상품 수량 선택
 
-            System.out.print("추가 주문하시겠습니까? (Y / N): ");
+            System.out.print("다른 상품을 추가 주문하시겠습니까? (Y / N): ");
             String answer = scanner.nextLine();
             if (answer.equalsIgnoreCase("n")) {
                 ordering = false;
-                System.out.println("주문을 종료합니다.");
+                System.out.println("주문을 종료합니다. 계산을 진행하겠습니다.");
                 System.out.println("--------------------------------------------------------------------------");
             } else if (answer.equalsIgnoreCase("y")) {
                 System.out.println("장바구니에 담겼습니다.");

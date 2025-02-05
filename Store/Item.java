@@ -5,6 +5,10 @@ public abstract class Item {
     int price;
     int id;
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -13,8 +17,6 @@ public abstract class Item {
         return price;
     }
 
-    public Item() {
-    }
 
     public Item(String name, int price) {
         this.name = name;

@@ -1,16 +1,11 @@
 package Store;
 
-public class AdditionalItem extends Item{
-    public static int additionalCnt =0;
+public class AdditionalItem extends Item {
     public AdditionalItem(String name, int price) {
-        this.name=name;
-        this.price=price;
-        this.id=++additionalCnt;
+        super(name, price);
     }
-    public static void resetCounter(){
-        additionalCnt =0;
-    }
-    public void displayMenu(){
+
+    public void displayMenu() {
         System.out.println(String.format("%d. %s (+%,d won)", this.id, name, price));
     }
 }
