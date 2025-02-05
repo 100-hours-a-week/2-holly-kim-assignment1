@@ -26,8 +26,28 @@ Main.java 실행
 
 Item←MainItem←PromotionItem 으로 2차 상속을 구현했습니다.
 
-Scanner를 여러 곳에서 사용하면 생기는 문제를 방지하기 위해 getScanner()를 구현했습니다. 
+Scanner 객체가 중복 생성되는 것을 막기 위해 getScanner()를 구현했습니다. 
 
-메인메뉴 목록(모든 메인메뉴), 추가메뉴 목록, 음료 목록에서 각각 번호를 매기기 위해 static int cnt를 선언했습니다. 
 
-세트메뉴 추가상품메뉴와 음료메뉴는 둘 다 AdditionalItem객체이므로 static int 변수인 cnt 값을 0으로 리셋하기 위해 resetCount() 함수를 구현했습니다.
+###  변경 사항
+2025.02.05
+
+
+
+1. static int cnt->동시성 문제/단위테스트 어려움 유발 가능  
+static int cnt 변수를 삭제하고 Store.java에서 id를 초기화하는 함수를 작성. 한 번만 실행되도록 welcome()에서 이 함수를 호출.
+
+
+
+3. 메뉴 수정 시 id값 관리의 어려움  
+메뉴리스트와 id를 인자로 수정하거나 삭제하는 함수를 구현
+
+
+
+4. selectMenu()에서 많은 역할을 수행->단일 책임  
+메뉴를 선택하는 부분과 금액을 계산하는 부분으로 분리
+
+
+
+5. selectMenu()에서 입력값 유효성 검사 조건 변경  
+selectedNum<0 -> selectedNum<1
