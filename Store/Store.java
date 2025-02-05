@@ -69,6 +69,11 @@ public class Store {
         setItemId(sideMenuList);
         setItemId(drinkList);
 
+        // 리스트 수정
+        AdditionalItem doctorPepper=new AdditionalItem("닥터페퍼",1000);
+        addItem(drinkList, doctorPepper);
+        // 리스트 삭제, 인덱스 값은 0부터 시작에 주의!
+        deleteItem(mainMenuList, 4);
         System.out.println("======================== Welcome to McDonald's ===========================");
         popup();
         System.out.println("주문을 도와드리겠습니다.");
