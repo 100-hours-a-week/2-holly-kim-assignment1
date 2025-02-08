@@ -23,6 +23,8 @@ public abstract class Item {
         this.price = price;
     }
 
+    public void displayMenu(){}
+
     @Override
     public String toString() {
         return this.name;

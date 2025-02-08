@@ -105,10 +105,7 @@ public class Store {
 
         System.out.println("❇ 메인 메뉴");
         System.out.println("메뉴를 선택해주세요.\n");
-        for (MainItem i : mainMenuList) {
-            i.displayMenu();
-        }
-        for (PromotionItem i : newMenuList) {
+        for (Item i : allMainMenuList) {
             i.displayMenu();
         }
         // 선택한 버거가 할인 버거인 경우 discountRate 변경
